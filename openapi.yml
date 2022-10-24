@@ -1,0 +1,323 @@
+openapi: 3.0.3
+info:
+  title: Swagger test - OpenAPI 3.0
+  version: 1.0.11
+  description: "1. Получить список пользователей и  выбрать любого понравившегося, запомнить id\n2. Получить список авто и выбрать любое понравившееся\n3. Присвоить выбранному авто user_id из пункта 1"
+servers:
+  - url: http://127.0.0.1:8000
+paths:
+  /cars:
+    get:
+      tags:
+        - Cars
+      summary: Retrieve all cars
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cars'
+    post:
+      tags:
+        - Cars
+      summary: Create new car
+      parameters:
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/user_id'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CarCreated'
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+  /cars/{id}:
+    get:
+      tags:
+        - Cars
+      parameters:
+        - name: id
+          in: path
+          required: true
+          example: 5
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CarRetrieved'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+    put:
+      tags:
+        - Cars
+      parameters:
+        - name: id
+          in: path
+          required: true
+          example: 5
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/user_id'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CarUpdated'
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+    delete:
+      tags:
+        - Cars
+      parameters:
+        - name: id
+          in: path
+          required: true
+          example: 5
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CarDeleted'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Retrieve all users
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          example: 1
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRetrieved'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+components:
+  parameters:
+    name:
+      name: name
+      in: query
+      required: true
+      description: Name of the car
+      schema:
+        type: string
+      example: Honda Accord
+    user_id:
+      name: user_id
+      in: query
+      allowEmptyValue: true
+      required: false
+      description: user_id of the car
+      schema:
+        type: integer
+      example: 10
+  schemas:
+    Cars:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Car'
+    CarCreated:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: created
+        data:
+          $ref: '#/components/schemas/Car'
+    CarUpdated:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: updated
+        data:
+          $ref: '#/components/schemas/Car'
+    CarRetrieved:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example:
+        data:
+          $ref: '#/components/schemas/Car'
+    CarDeleted:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: deleted
+        data:
+          type: string
+          example:
+    Car:
+      title: Car object
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+        user_id:
+          $ref: '#/components/parameters/user_id'
+        name:
+          $ref: '#/components/parameters/name'
+        created_at:
+          type: string
+          example: "2022-10-19T14:07:39.000000Z"
+        updated_at:
+          type: string
+          example: "2022-10-20T07:09:17.000000Z"
+    Users:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    User:
+      title: User object
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Kay Davis
+        email:
+          type: string
+          example: heathcote.alice@example.com
+        email_verified_at:
+          type: string
+          example: "2022-10-19T14:07:39.000000Z"
+        created_at:
+          type: string
+          example: "2022-10-19T14:07:39.000000Z"
+        updated_at:
+          type: string
+          example: "2022-10-20T07:09:17.000000Z"
+        car:
+          $ref: '#/components/schemas/Car'
+    UserRetrieved:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example:
+        data:
+          $ref: '#/components/schemas/User'
+    ValidationError:
+      title: Validation Error
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          example: The name field is required.
+        data:
+          type: string
+          example:
+    BadRequestError:
+      title: Bad Request Error
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          example: "No query results"
+        data:
+          type: string
+          example:
