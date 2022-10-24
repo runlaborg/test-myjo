@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\User;
+
+class UserController extends Controller
+{
+    public function index()
+    {
+        $users = User::all();
+        return $this->successResponse($users);
+    }
+
+    public function show(User $user)
+    {
+        return $this->successResponse($user);
+    }
+}
